@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buscar canciones</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header Section -->
+      <header>
+        <h1>Buscar canciones</h1>
+      </header>
+
+      <!-- Search Section -->
+      <div class="search-section">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Introduce una cancion..."
+        />
+        <button id="searchButton" disabled>Buscar</button>
+        <button id="deleteButton" disabled>Borrar</button>
+      </div>
+      <div id="grid">
+        <!-- Tracks Container -->
+        <div id="tracks-container">
+          <div class="search-message">BUSCA UNA CANCION</div>
+        </div>
+
+        <!-- Artist Container -->
+        <div id="artist-container"></div>
+      </div>
+      <!-- Playlist Button -->
+      <button id="playlistButton">Crear Playlist</button>
+
+      <!-- Added Message -->
+      <div id="addedMessage">Cancion añadida a la lista</div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

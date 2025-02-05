@@ -1,0 +1,165 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #1db954;
+}
+
+/* Search Section */
+.search-section {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#searchInput {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #1db954;
+  border-radius: 5px;
+  background-color: #282828;
+  color: #ffffff;
+}
+
+#searchButton,
+#deleteButton,
+#playlistButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #1db954;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+#searchButton:hover,
+#deleteButton:hover,
+#playlistButton:hover {
+  background-color: #1ed760;
+}
+
+/* Tracks Container */
+#tracks-container {
+  margin-top: 20px;
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  background-color: #282828;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.track__image {
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+
+.track h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.track h2 {
+  font-size: 14px;
+  color: #b3b3b3;
+  margin: 5px 0;
+}
+
+.track h3 {
+  font-size: 12px;
+  color: #b3b3b3;
+  margin: 5px 0;
+}
+
+.addButton {
+  margin-left: auto;
+  padding: 5px 10px;
+  background-color: #1db954;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background-color: #1ed760;
+}
+
+/* Artist Container */
+#artist-container {
+  margin-top: 20px;
+}
+
+.artist {
+  background-color: #282828;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.artist__image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.artist h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.artist h2 {
+  font-size: 16px;
+  color: #b3b3b3;
+  margin: 5px 0;
+}
+
+.artist h3 {
+  font-size: 14px;
+  color: #b3b3b3;
+  margin: 5px 0;
+}
+
+.artistBestSongs {
+  margin-top: 10px;
+}
+
+.songWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Added Message */
+#addedMessage {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #1db954;
+  padding: 10px 20px;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#grid {
+  display: grid;
+  grid-template-columns: auto auto;
+}
