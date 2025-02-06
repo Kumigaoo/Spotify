@@ -121,7 +121,7 @@ function renderTracks(data) {
     let addButtonText = "+ Añadir";
     let savedSongs = JSON.parse(localStorage.getItem("savedSongs")) || [];
 
-    if (savedSongs.includes(tracks[i].id)) {
+    if (savedSongs.includes(tracks[i].trackName)) {
       addButtonText = "En la lista";
     }
 
@@ -153,7 +153,10 @@ function renderTracks(data) {
         localStorage.setItem("savedSongs", JSON.stringify(savedSongs));
         buttonText.innerHTML = "+ Añadir";
       } else {
-        savedSongs.push(tracks[i].id);
+        let trackUri = tracks[i].uri;
+        let trackName = tracks[i].name;
+        let artistName = tracks[i].artists[0].name;
+        savedSongs.push({ trackUri, trackName, artistName });
         localStorage.setItem("savedSongs", JSON.stringify(savedSongs));
         buttonText.innerHTML = "En la lista";
 

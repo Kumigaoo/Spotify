@@ -92,28 +92,61 @@ function renderTracks(tracks) {
     const element = document.createElement("div");
     element.classList.add("track");
     element.innerHTML = `
-            <img src="${track.track.album.images[0].url}" alt="Album cover">
-            <div>
-                <h2>${track.track.name}</h2>
-                <h3>${track.track.artists[0].name}</h3>
-            </div>
-            <button onclick="addToSelected('${track.track.uri}', '${track.track.name}', '${track.track.artists[0].name}')">ADD</button>
-        `;
+      <img src="${track.track.album.images[0].url}" alt="Album cover">
+      <div>
+        <h2>${track.track.name}</h2>
+        <h3>${track.track.artists[0].name}</h3>
+      </div>
+      <button class="add-button">ADD</button>
+    `;
     container.appendChild(element);
+
+    // Add event listener to the button
+    const addButton = element.querySelector(".add-button");
+    addButton.addEventListener("click", () => {
+      addToSelected(
+        track.track.uri,
+        track.track.name,
+        track.track.artists[0].name
+      );
+    });
   });
 }
 
 function addToSelected(trackUri, trackName, artistName) {
-  const container = document.getElementById("saved-tracks-container");
-  const element = document.createElement("div");
-  element.classList.add("track");
-  element.innerHTML = `
-        ${trackName} - ${artistName}
-        <button class="delButton" onclick="deleteTrack('${trackUri}', this)">❌</button>
-    `;
-  container.appendChild(element);
+  let savedSongs = JSON.parse(localStorage.getItem("savedSongs")) || [];
+
+  // Avoid duplicate entries
+  if (!savedSongs.some((song) => song.trackUri === trackUri)) {
+    savedSongs.push({ trackUri, trackName, artistName });
+    localStorage.setItem("savedSongs", JSON.stringify(savedSongs));
+  }
 }
 
+function renderSavedTracks() {
+  const container = document.getElementById("saved-tracks-container");
+  container.innerHTML = ""; // Limpiar el contenido existente
+
+  let savedSongs = JSON.parse(localStorage.getItem("savedSongs")) || [];
+  console.log(savedSongs);
+
+  savedSongs.forEach(({ trackUri, trackName, artistName }) => {
+    const element = document.createElement("div");
+    element.classList.add("savedSongs");
+    element.innerHTML = `
+      ${trackName} - ${artistName}
+      <button class="delButton">❌</button>
+    `;
+    container.appendChild(element);
+
+    // Agregar el evento al botón de eliminar
+    const deleteButton = element.querySelector(".delButton");
+    deleteButton.addEventListener("click", function (event) {
+      event.stopPropagation(); // Evitar la propagación del evento
+      deleteTrack(trackUri, element);
+    });
+  });
+}
 async function deleteTrack(trackUri, element) {
   if (confirm("Estàs segur que vols eliminar la cançó de la playlist?")) {
     try {
@@ -133,3 +166,4 @@ async function deleteTrack(trackUri, element) {
   }
 }
 getUserProfile();
+renderSavedTracks();
