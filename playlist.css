@@ -1,0 +1,90 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #c1e1a6;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+h1 {
+  color: #2e5a2b;
+}
+
+#content {
+  display: flex;
+  justify-content: space-around;
+  width: 90%;
+  gap: 20px;
+}
+
+#playlists,
+#songs,
+#selected-songs {
+  background-color: #8fc16e;
+  padding: 15px;
+  border-radius: 8px;
+  flex: 1;
+}
+
+#playlists {
+  max-width: 200px;
+}
+
+h2 {
+  color: #2e5a2b;
+  text-align: center;
+}
+
+.track {
+  background-color: #2e5a2b;
+  color: white;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.track img {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #6b8e23;
+  border: none;
+  padding: 5px 10px;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #556b2f;
+}
+
+.delButton {
+  background-color: #b22222;
+}
+
+.delButton:hover {
+  background-color: #8b0000;
+}
+
+.back-button {
+  background-color: #2e5a2b;
+  color: white;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-bottom: 10px;
+}

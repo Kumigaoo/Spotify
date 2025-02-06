@@ -282,7 +282,7 @@ getSpotifyAccessToken(clientId, clientSecret);
 
 /**** AUTORIZACIÓN PLAYLIST ****/
 const URL = "https://accounts.spotify.com/authorize";
-const redirectUri = "http://127.0.0.1:5500/playList.html";
+const redirectUri = "http://127.0.0.1:3000/playList.html";
 const scopes =
   "playlist-modify-private user-library-modify playlist-modify-public";
 
