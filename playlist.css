@@ -31,7 +31,9 @@ h1 {
   border-radius: 8px;
   flex: 1;
 }
-
+.remove-button {
+  background-color: red;
+}
 #playlists {
   max-width: 200px;
 }

@@ -1,5 +1,6 @@
 let userId = "";
 let selectedPlaylistId = "";
+let selectedPlaylistName = "";
 
 function getAccessTokenFromURL() {
   const hash = window.location.hash.substring(1);
@@ -57,15 +58,67 @@ function renderPlaylists(playlists) {
     const element = document.createElement("div");
     element.classList.add("track");
     element.textContent = playlist.name;
-    element.addEventListener("click", () => selectPlaylist(playlist.id));
+    element.addEventListener("click", () =>
+      selectPlaylist(playlist.id, playlist.name)
+    );
     container.appendChild(element);
   });
 }
 
-async function selectPlaylist(playlistId) {
+async function selectPlaylist(playlistId, playlistName) {
   selectedPlaylistId = playlistId;
+  selectedPlaylistName = playlistName;
   loadPlaylistTracks(playlistId);
+  loadPlaylistName(selectedPlaylistName);
+  // Mostra el nom actual de la playlist en l'input
+  function loadPlaylistName(name) {
+    playlistNameInput.value = name;
+  }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const playlistNameInput = document.getElementById("playlistNameInput");
+  const updateButton = document.getElementById("updatePlaylistButton");
+
+  // Modificar el nom de la playlist a Spotify
+  async function updatePlaylistName() {
+    const newName = playlistNameInput.value.trim();
+
+    if (!newName) {
+      alert("El nom de la playlist no pot estar buit!");
+      return;
+    }
+
+    if (confirm("Estàs segur que vols modificar el nom de la playlist?")) {
+      try {
+        const response = await fetch(
+          `https://api.spotify.com/v1/playlists/${selectedPlaylistId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ name: newName }),
+          }
+        );
+
+        if (response.ok) {
+          alert("Nom de la playlist modificat correctament!");
+          loadPlaylists();
+        } else {
+          alert("Error en modificar el nom de la playlist.");
+        }
+      } catch (error) {
+        console.error("Error al modificar el nom:", error);
+        alert("S'ha produït un error.");
+      }
+    }
+  }
+
+  // Event Listener per modificar el nom
+  updateButton.addEventListener("click", updatePlaylistName);
+});
 
 async function loadPlaylistTracks(playlistId) {
   try {
@@ -98,6 +151,7 @@ function renderTracks(tracks) {
         <h3>${track.track.artists[0].name}</h3>
       </div>
       <button class="add-button">ADD</button>
+      <button class="remove-button">REMOVE</button>
     `;
     container.appendChild(element);
 
@@ -110,7 +164,36 @@ function renderTracks(tracks) {
         track.track.artists[0].name
       );
     });
+    const deleteBut = element.querySelector(".remove-button");
+    deleteBut.addEventListener("click", async () => {
+      await removeTrack(
+        track.track.uri,
+        track.track.name,
+        track.track.artists[0].name,
+        element
+      );
+    });
   });
+}
+async function removeTrack(trackUri, trackName, artistName, element) {
+  try {
+    await fetch(
+      `https://api.spotify.com/v1/playlists/${selectedPlaylistId}/tracks`,
+      {
+        method: "DELETE", // Use POST to add tracks
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ tracks: [{ uri: trackUri }] }), // Correct body format
+      }
+    );
+    if (element) {
+      element.remove();
+    }
+  } catch (error) {
+    console.error("Error al quitar la cançó:", error);
+  }
 }
 
 function addToSelected(trackUri, trackName, artistName) {
@@ -121,6 +204,7 @@ function addToSelected(trackUri, trackName, artistName) {
     savedSongs.push({ trackUri, trackName, artistName });
     localStorage.setItem("savedSongs", JSON.stringify(savedSongs));
   }
+  renderSavedTracks();
 }
 
 function renderSavedTracks() {
@@ -135,6 +219,7 @@ function renderSavedTracks() {
     element.classList.add("savedSongs");
     element.innerHTML = `
       ${trackName} - ${artistName}
+      <button class="PAddButton">✔️</button>
       <button class="delButton">❌</button>
     `;
     container.appendChild(element);
@@ -145,25 +230,63 @@ function renderSavedTracks() {
       event.stopPropagation(); // Evitar la propagación del evento
       deleteTrack(trackUri, element);
     });
+    const addButton = element.querySelector(".PAddButton");
+    addButton.addEventListener("click", function (event) {
+      event.stopPropagation(); // Evitar la propagación del evento
+      addTrackPlaylist(trackUri, element);
+    });
   });
 }
-async function deleteTrack(trackUri, element) {
-  if (confirm("Estàs segur que vols eliminar la cançó de la playlist?")) {
+async function addTrackPlaylist(trackUri, element) {
+  if (confirm("Estàs segur que vols afegir la cançó a la playlist?")) {
+    let savedSongs = JSON.parse(localStorage.getItem("savedSongs")) || [];
+
     try {
       await fetch(
         `https://api.spotify.com/v1/playlists/${selectedPlaylistId}/tracks`,
         {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ tracks: [{ uri: trackUri }] }),
+          method: "POST", // Use POST to add tracks
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ uris: [trackUri] }), // Correct body format
         }
       );
+      savedSongs = savedSongs.filter((track) => track.trackUri !== trackUri);
 
-      element.parentElement.remove();
+      // Save updated array back to localStorage
+      localStorage.setItem("savedSongs", JSON.stringify(savedSongs));
+
+      // Remove the element from the UI (if needed)
+      if (element) {
+        element.remove();
+      }
+      renderTracks();
+      loadPlaylists();
+      // Remove the song from the UI if it was in a list
     } catch (error) {
-      console.error("Error al eliminar la canción:", error);
+      console.error("Error al afegir la cançó:", error);
     }
   }
 }
+
+async function deleteTrack(trackUri, element) {
+  if (confirm("Estàs segur que vols eliminar la cançó de la playlist?")) {
+    let savedSongs = JSON.parse(localStorage.getItem("savedSongs")) || [];
+
+    // Filter out the song that matches trackUri
+    savedSongs = savedSongs.filter((track) => track.trackUri !== trackUri);
+
+    // Save updated array back to localStorage
+    localStorage.setItem("savedSongs", JSON.stringify(savedSongs));
+
+    // Remove the element from the UI (if needed)
+    if (element) {
+      element.remove();
+    }
+  }
+}
+
 getUserProfile();
 renderSavedTracks();
